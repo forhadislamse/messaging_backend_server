@@ -3,8 +3,10 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { rateLimit } from 'express-rate-limit';
 import GlobalErrorHandler from "./app/middlewares/globalErrorHandler";
 import router from "./app/routes";
+import logger from "./shared/logger";
 
 const app: Application = express();
 export const corsOptions = {
@@ -21,6 +23,20 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+// Global Rate Limiting
+const globalLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: 'draft-7',
+	legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests from this IP, please try again later."
+  }
+});
+
+app.use(globalLimiter);
 
 // Route handler for root endpoint
 app.get("/", (req: Request, res: Response) => {

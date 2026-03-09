@@ -1,9 +1,11 @@
 import { Client, LocalAuth } from 'whatsapp-web.js';
 import qrcode from 'qrcode';
+import PQueue from 'p-queue';
 import { IWhatsAppMessagePayload, TWhatsAppStatus } from './whatsapp.interface';
 import ApiError from '../../../errors/ApiErrors';
 import httpStatus from 'http-status';
 import config from '../../../config';
+import logger from '../../../shared/logger';
 
 class WhatsAppService {
   private client: Client;
@@ -11,8 +13,10 @@ class WhatsAppService {
   private qrCode: string | null = null;
   private onQRCallback: ((qr: string) => void) | null = null;
   private onStatusCallback: ((status: TWhatsAppStatus) => void) | null = null;
+  private messageQueue: PQueue;
 
   constructor() {
+    this.messageQueue = new PQueue({ concurrency: 1 }); // Process one message at a time to avoid session lock
     this.client = new Client({
       authStrategy: new LocalAuth({
         dataPath: config.whatsapp.session_path
@@ -29,11 +33,15 @@ class WhatsAppService {
   private initializeEvents() {
     this.client.on('qr', async (qr) => {
       this.status = 'AUTHENTICATING';
-      this.qrCode = await qrcode.toDataURL(qr);
-      if (this.onQRCallback) {
-        this.onQRCallback(this.qrCode);
+      try {
+        this.qrCode = await qrcode.toDataURL(qr);
+        if (this.onQRCallback) {
+          this.onQRCallback(this.qrCode);
+        }
+        logger.info('WhatsApp QR Code generated and transmitted via Socket.IO');
+      } catch (err) {
+        logger.error({ err }, 'Failed to generate WhatsApp QR Code');
       }
-      console.log('WhatsApp QR Code generated');
     });
 
     this.client.on('ready', () => {
@@ -42,27 +50,28 @@ class WhatsAppService {
       if (this.onStatusCallback) {
         this.onStatusCallback(this.status);
       }
-      console.log('WhatsApp Client is ready!');
+      logger.info('WhatsApp Client is ready and authenticated');
     });
 
     this.client.on('authenticated', () => {
-      console.log('WhatsApp Authenticated successfully');
+      logger.info('WhatsApp Authenticated successfully');
     });
 
     this.client.on('auth_failure', (msg) => {
       this.status = 'DISCONNECTED';
-      console.error('WhatsApp Auth failure:', msg);
+      logger.error('WhatsApp Auth failure: %s', msg);
     });
 
     this.client.on('disconnected', (reason) => {
       this.status = 'DISCONNECTED';
-      console.log('WhatsApp Client was logged out:', reason);
-      this.client.initialize(); // Attempt reconnection
+      logger.warn('WhatsApp Client was logged out or disconnected: %s', reason);
+      this.client.initialize().catch(err => logger.error({ err }, 'Failed to re-initialize WhatsApp client'));
     });
   }
 
   public initialize() {
-    this.client.initialize();
+    logger.info('Initializing WhatsApp Service...');
+    this.client.initialize().catch(err => logger.error({ err }, 'WhatsApp initialization failed'));
   }
 
   public setOnQRCallback(callback: (qr: string) => void) {
@@ -85,21 +94,30 @@ class WhatsAppService {
     return this.qrCode;
   }
 
+  /**
+   * Sends a WhatsApp message.
+   * Uses a queue to handle concurrency and ensure stability.
+   */
   public async sendMessage(payload: IWhatsAppMessagePayload) {
     if (this.status !== 'READY') {
+      logger.warn('Attempted to send message while WhatsApp client is not READY. Current status: %s', this.status);
       throw new ApiError(httpStatus.SERVICE_UNAVAILABLE, 'WhatsApp client is not ready');
     }
 
-    try {
-      const { phoneNumber, message } = payload;
-      // Format phone number: remove '+' and ensure it ends with @c.us
-      const formattedNumber = phoneNumber.replace('+', '') + '@c.us';
-      const response = await this.client.sendMessage(formattedNumber, message);
-      return response;
-    } catch (error) {
-           console.log(error);
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to send WhatsApp message');
-    }
+    const { phoneNumber, message } = payload;
+    
+    return this.messageQueue.add(async () => {
+      try {
+        logger.info('Processing message for: %s', phoneNumber);
+        const formattedNumber = phoneNumber.replace('+', '').replace(/[^0-9]/g, '') + '@c.us';
+        const response = await this.client.sendMessage(formattedNumber, message);
+        logger.info('Message successfully sent to %s (SID: %s)', phoneNumber, response.id._serialized);
+        return response;
+      } catch (error: any) {
+        logger.error({ err: error }, `Failed to send WhatsApp message to ${phoneNumber}`);
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Failed to send WhatsApp message: ${error.message}`);
+      }
+    });
   }
 }
 

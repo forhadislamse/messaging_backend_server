@@ -6,12 +6,8 @@ import handleZodError from "../../errors/handleZodError";
 import parsePrismaValidationError from "../../errors/parsePrismaValidationError";
 import ApiError from "../../errors/ApiErrors";
 
-// TODO Replace `config.NODE_ENV` with your actual environment configuration
-
-// TODO
-const config = {
-  NODE_ENV: process.env.NODE_ENV || "development",
-};
+import logger from "../../shared/logger";
+import config from "../../config";
 
 const GlobalErrorHandler = (
   err: any,
@@ -83,12 +79,18 @@ const GlobalErrorHandler = (
     errorSources.push("Unknown Error");
   }
 
+  if (statusCode >= 500) {
+    logger.error(err);
+  } else {
+    logger.warn({ message, path: req.originalUrl }, 'Client error');
+  }
+
   res.status(statusCode).json({
     success: false,
     message,
     errorSources,
     err,
-    stack: config.NODE_ENV === "development" ? err?.stack : null,
+    stack: config.env === "development" ? err?.stack : null,
   });
 };
 
