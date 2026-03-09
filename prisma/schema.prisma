@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  email         String?    @unique
+  password      String?
+  firstName     String?    @default("")
+  lastName      String?    @default("")
+  profileImage  String?    @default("")
+  phone         String?    @default("")
+  status        UserStatus @default(ACTIVE)
+  isVerifyEmail Boolean    @default(false)
+
+  address String? @default("")
+  lat     Float?  @default(0)
+  lng     Float?  @default(0)
+
+
+  isDeleted        Boolean @default(false)
+  isNotificationOn Boolean @default(false)
+  isUserOnline     Boolean @default(false)
+  fcmToken         String? @default("")
+
+  accountLink      String? @default("")
+  stripeAccountUrl String? @default("")
+  stripeAccountId  String? @default("")
+  stripeCustomerId String? @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
