@@ -1,5 +1,6 @@
 import express from "express";
 import { AuthRoutes } from "../modules/Auth/auth.routes";
+import { WhatsAppRoutes } from "../modules/whatsapp/whatsapp.routes";
 import { userRoutes } from "../modules/User/user.route";
 
 import { fileUploadRoutes } from "../modules/fileUpload/fileUpload.routes";
@@ -25,6 +26,10 @@ const moduleRoutes = [
   {
     path: "/uploads",
     route: fileUploadRoutes,
+  },
+  {
+    path: "/whatsapp",
+    route: WhatsAppRoutes,
   },
 ];
 

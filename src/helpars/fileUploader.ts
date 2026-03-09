@@ -5,9 +5,6 @@ import {
   PutObjectCommand,
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import streamifier from "streamifier";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -22,27 +19,9 @@ const s3Client = new S3Client({
   },
 });
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Multer configuration using memoryStorage (for DigitalOcean & Cloudinary)
+// Multer configuration using memoryStorage (for DigitalOcean)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-
-// ✅ Fixed Cloudinary Storage
-const cloudinaryStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    public_id: (req, file) =>
-      `spin/${Date.now()}_${uuidv4()}_${file.originalname}`, // Use a unique name for each file
-  },
-});
-
-const cloudinaryUpload = multer({ storage: cloudinaryStorage });
 
 // Upload single image
 const uploadSingle = upload.single("image");
@@ -57,42 +36,7 @@ const updateProfile = upload.fields([
   { name: "banner", maxCount: 1 },
 ]);
 
-// ✅ Fixed Cloudinary Upload (Now supports buffer)
-const uploadToCloudinary = async (
-  file: Express.Multer.File
-): Promise<{ Location: string; public_id: string }> => {
-  if (!file) {
-    throw new Error("File is required for uploading.");
-  }
-
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: "uploads",
-        resource_type: "auto", // Supports images, videos, etc.
-        use_filename: true,
-        unique_filename: false,
-      },
-      (error, result) => {
-        if (error) {
-          console.error("Error uploading file to Cloudinary:", error);
-          return reject(error);
-        }
-
-        // ✅ Explicitly return `Location` and `public_id`
-        resolve({
-          Location: result?.secure_url || "", // Cloudinary URL
-          public_id: result?.public_id || "",
-        });
-      }
-    );
-
-    // Convert buffer to stream and upload
-    streamifier.createReadStream(file.buffer).pipe(uploadStream);
-  });
-};
-
-// ✅ Unchanged: DigitalOcean Upload
+// ✅ DigitalOcean Upload
 const uploadToDigitalOcean = async (file: Express.Multer.File) => {
   if (!file) {
     throw new Error("File is required for uploading.");
@@ -127,14 +71,11 @@ const uploadToDigitalOcean = async (file: Express.Multer.File) => {
   }
 };
 
-// ✅ No Name Changes, Just Fixes
 export const fileUploader = {
   upload,
   uploadSingle,
   uploadMultipleImage,
   updateProfile,
   uploadFile,
-  cloudinaryUpload,
   uploadToDigitalOcean,
-  uploadToCloudinary,
 };

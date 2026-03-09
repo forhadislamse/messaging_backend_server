@@ -20,27 +20,13 @@ export default {
     reset_pass_token_expires_in: process.env.RESET_PASS_TOKEN_EXPIRES_IN,
   },
   reset_pass_link: process.env.RESET_PASS_LINK,
-  emailSender: {
-    email: process.env.EMAIL,
-    app_pass: process.env.APP_PASS,
-    smtp_server: process.env.smtp_server,
-    smtp_port: process.env.smtp_port,
-    smtp_user: process.env.smtp_user,
-    smtp_pass: process.env.smtp_pass,
-  },
   brevoMail: {
     api_key: process.env.BREVO_API_KEY,
     email: process.env.BREVO_EMAIL,
     sender_name: process.env.BREVO_SENDER_NAME,
   },
-  stripe: {
-    publishable_key: process.env.STRIPE_PUBLISHABLE_KEY,
-    secret_key: process.env.STRIPE_SECRET_KEY,
-    webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
-    admin_account: process.env.STRIPE_ADMIN_ACCOUNT_ID,
-  },
   platformCharge: {
-    percentage: Number(process.env.PLATFORM_CHARGE_PERCENTAGE) || 10, // Default 10% if not set in env
+    percentage: Number(process.env.PLATFORM_CHARGE_PERCENTAGE) || 10,
   },
   client: {
     url:
@@ -48,17 +34,12 @@ export default {
       process.env.CLIENT_URL ||
       "http://localhost:3000",
   },
-  twilio: {
-    accountSid: process.env.TWILIO_ACCOUNT_SID,
-    authToken: process.env.TWILIO_AUTH_TOKEN,
-    twilioPhoneNumber: process.env.TWILIO_PHONE_NUMBER,
-  },
-   digitalOcean: {
-        endpoint: process.env.DO_SPACE_ENDPOINT,
-        originEndpoint: process.env.DO_SPACE_ORIGIN_ENDPOINT,
-        accessKey: process.env.DO_SPACE_ACCESS_KEY,
-        secretKey: process.env.DO_SPACE_SECRET_KEY,
-        bucket: process.env.DO_SPACE_BUCKET,
+  digitalOcean: {
+    endpoint: process.env.DO_SPACE_ENDPOINT,
+    originEndpoint: process.env.DO_SPACE_ORIGIN_ENDPOINT,
+    accessKey: process.env.DO_SPACE_ACCESS_KEY,
+    secretKey: process.env.DO_SPACE_SECRET_KEY,
+    bucket: process.env.DO_SPACE_BUCKET,
   },
   firebase: {
     type: process.env.FIREBASE_TYPE,

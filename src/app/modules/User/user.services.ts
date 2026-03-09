@@ -4,7 +4,6 @@ import * as bcrypt from "bcrypt";
 import config from "../../../config";
 import httpStatus from "http-status";
 import { jwtHelpers } from "../../../helpars/jwtHelpers";
-import { omit } from "lodash";
 import { IUserFilters } from "./user.interface";
 import { fileUploader } from "../../../helpars/fileUploader";
 import { deleteImageAndFile } from "../../../helpars/fileDelete";
@@ -26,7 +25,8 @@ const getMyProfile = async (userToken: string) => {
   if (!userProfile) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
-  const userWithoutPassword = omit(userProfile, ["password"]);
+  
+  const { password: _, ...userWithoutPassword } = userProfile as any;
 
   return userWithoutPassword;
 };
@@ -139,8 +139,7 @@ const toggleUserOnlineStatus = async (
     },
   });
 
-  const userWithoutSensitive = omit(updatedUser, ["password", "fcmToken"]);
-  return userWithoutSensitive;
+  return updatedUser;
 };
 
 
@@ -182,8 +181,7 @@ const toggleNotificationOnOff = async (
     },
   });
 
-  const userWithoutSensitive = omit(updatedUser, ["password", "fcmToken"]);
-  return userWithoutSensitive;
+  return updatedUser;
 };
 
 

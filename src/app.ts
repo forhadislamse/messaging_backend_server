@@ -10,7 +10,7 @@ const app: Application = express();
 export const corsOptions = {
   origin: true, // Allow all origins for now to prevent CORS issues with Vercel frontend
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "stripe-signature"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
