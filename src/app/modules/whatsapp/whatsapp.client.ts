@@ -77,8 +77,11 @@ class WhatsAppClient {
       this.client.initialize().catch(err => logger.error({ err }, 'Failed to re-initialize WhatsApp client'));
     });
 
-    this.client.on('message', (message) => {
-      logger.info('New WhatsApp message received from: %s', message.from);
+    this.client.on('message_create', (message) => {
+      // message_create triggers for both incoming and outgoing messages
+      const isOutgoing = message.fromMe;
+      logger.info('WhatsApp message %s: %s', isOutgoing ? 'sent' : 'received', message.from);
+      
       if (this.onMessageCallback) {
         this.onMessageCallback(message);
       }

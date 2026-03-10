@@ -49,6 +49,7 @@ export const setupSocketIO = (server: HttpServer) => {
         body: message.body,
         timestamp: message.timestamp,
         type: message.type,
+        fromMe: message.fromMe,
       });
     }
   });
