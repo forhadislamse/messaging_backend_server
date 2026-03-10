@@ -1,4 +1,4 @@
-import { whatsappClient } from './whatsapp.client';
+import { whatsappClient } from './whatsapp.client'; 
 import { TWhatsAppStatus } from './whatsapp.interface';
 
 /**
