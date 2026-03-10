@@ -47,6 +47,10 @@ class MessageService {
         }
 
         const finalDestination = numberId._serialized;
+        if (finalDestination !== formattedNumber) {
+          logger.info('Number %s resolved to official ID: %s', formattedNumber, finalDestination);
+        }
+        
         logger.info('Sending message to verified destination: %s', finalDestination);
 
         const response = await client.sendMessage(finalDestination, message);
