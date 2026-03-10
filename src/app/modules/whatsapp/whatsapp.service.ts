@@ -43,6 +43,10 @@ class WhatsAppService {
   public async getChats() {
     return await whatsappClient.getChats();
   }
+
+  public async getChatMessages(chatId: string, limit?: number) {
+    return await whatsappClient.getChatMessages(chatId, limit);
+  }
 }
 
 export const whatsappService = new WhatsAppService();

@@ -137,6 +137,28 @@ class WhatsAppClient {
     }
   }
 
+  public async getChatMessages(chatId: string, limit: number = 20) {
+    if (this.status !== 'READY') {
+      return [];
+    }
+    try {
+      const chat = await this.client.getChatById(chatId);
+      const messages = await chat.fetchMessages({ limit });
+      return messages.map(msg => ({
+        id: msg.id._serialized,
+        from: msg.from,
+        to: msg.to,
+        body: msg.body,
+        timestamp: msg.timestamp,
+        type: msg.type,
+        fromMe: msg.fromMe,
+      }));
+    } catch (err) {
+      logger.error({ err, chatId }, 'Failed to fetch messages for chat');
+      return [];
+    }
+  }
+
   public getStatus() {
     return this.status;
   }

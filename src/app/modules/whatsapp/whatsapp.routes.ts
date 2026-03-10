@@ -20,6 +20,7 @@ const sendMsgLimiter = rateLimit({
 // Authentication Routes
 router.get('/status', authController.getStatus);
 router.get('/chats', authController.getChats);
+router.get('/chats/:chatId/messages', authController.getChatMessages);
 router.post('/logout', authController.logout);
 
 // Messaging Routes

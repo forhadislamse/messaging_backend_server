@@ -33,8 +33,21 @@ const getChats = catchAsync(async (req, res) => {
   });
 });
 
+const getChatMessages = catchAsync(async (req, res) => {
+  const { chatId } = req.params;
+  const { limit } = req.query;
+  const result = await whatsappService.getChatMessages(chatId, limit ? Number(limit) : undefined);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Chat messages fetched successfully',
+    data: result,
+  });
+});
+
 export const authController = {
   getStatus,
   logout,
   getChats,
+  getChatMessages,
 };
