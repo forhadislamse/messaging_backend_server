@@ -3,16 +3,6 @@ import sendResponse from '../../../shared/sendResponse';
 import catchAsync from '../../../shared/catchAsync';
 import { whatsappService } from './whatsapp.service';
 
-const sendMessage = catchAsync(async (req, res) => {
-  const result = await whatsappService.sendMessage(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Message sent successfully',
-    data: result,
-  });
-});
-
 const getStatus = catchAsync(async (req, res) => {
   const status = whatsappService.getStatus();
   const qrCode = whatsappService.getQRCode();
@@ -24,7 +14,6 @@ const getStatus = catchAsync(async (req, res) => {
   });
 });
 
-export const whatsappController = {
-  sendMessage,
+export const authController = {
   getStatus,
 };

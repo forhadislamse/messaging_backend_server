@@ -2,7 +2,8 @@ import express from 'express';
 // import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { rateLimit } from 'express-rate-limit';
-import { whatsappController } from './whatsapp.controller';
+import { authController } from './auth.controller';
+import { messageController } from './message.controller';
 import { whatsappValidation } from './whatsapp.validation';
 
 const router = express.Router();
@@ -16,14 +17,16 @@ const sendMsgLimiter = rateLimit({
   }
 });
 
+// Authentication Routes
+router.get('/status', authController.getStatus);
+
+// Messaging Routes
 router.post(
   '/send-message',
   sendMsgLimiter,
   // auth(),
   validateRequest(whatsappValidation.sendMessageSchema),
-  whatsappController.sendMessage,
+  messageController.sendMessage,
 );
-
-router.get('/status', whatsappController.getStatus);
 
 export const WhatsAppRoutes = router;
