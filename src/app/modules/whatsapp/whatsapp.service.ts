@@ -39,6 +39,10 @@ class WhatsAppService {
   public async logout() {
     await whatsappClient.logout();
   }
+
+  public async getChats() {
+    return await whatsappClient.getChats();
+  }
 }
 
 export const whatsappService = new WhatsAppService();

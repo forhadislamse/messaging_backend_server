@@ -114,6 +114,29 @@ class WhatsAppClient {
     return this.client;
   }
 
+  public async getChats() {
+    if (this.status !== 'READY') {
+      return [];
+    }
+    try {
+      const chats = await this.client.getChats();
+      return chats.map(chat => ({
+        id: chat.id._serialized,
+        name: chat.name,
+        isGroup: chat.isGroup,
+        unreadCount: chat.unreadCount,
+        timestamp: chat.timestamp,
+        lastMessage: chat.lastMessage ? {
+          body: chat.lastMessage.body,
+          timestamp: chat.lastMessage.timestamp,
+        } : null
+      }));
+    } catch (err) {
+      logger.error({ err }, 'Failed to fetch WhatsApp chats');
+      return [];
+    }
+  }
+
   public getStatus() {
     return this.status;
   }

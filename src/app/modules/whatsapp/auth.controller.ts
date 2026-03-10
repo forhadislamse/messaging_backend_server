@@ -23,7 +23,18 @@ const logout = catchAsync(async (req, res) => {
   });
 });
 
+const getChats = catchAsync(async (req, res) => {
+  const result = await whatsappService.getChats();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'WhatsApp chats fetched successfully',
+    data: result,
+  });
+});
+
 export const authController = {
   getStatus,
   logout,
+  getChats,
 };
