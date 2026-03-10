@@ -4,6 +4,7 @@ import { TWhatsAppStatus } from './whatsapp.interface';
 /**
  * WhatsAppService handles high-level state coordination
  * and reporting for the WhatsApp channel.
+ * Delegates low-level details to WhatsAppClient.
  */
 class WhatsAppService {
   public initialize() {
@@ -29,6 +30,10 @@ class WhatsAppService {
     whatsappClient.setOnStatusCallback(callback);
     // Immediately trigger with current status
     callback(whatsappClient.getStatus());
+  }
+
+  public setOnMessageCallback(callback: (message: any) => void) {
+    whatsappClient.setOnMessageCallback(callback);
   }
 }
 

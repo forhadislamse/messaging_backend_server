@@ -1,6 +1,7 @@
 import { Server as HttpServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { whatsappService } from '../app/modules/whatsapp/whatsapp.service';
+import logger from './logger';
 
 let io: SocketIOServer;
 
@@ -13,7 +14,7 @@ export const setupSocketIO = (server: HttpServer) => {
   });
 
   io.on('connection', (socket) => {
-    console.log('New Socket.IO client connected:', socket.id);
+    logger.info('New Socket.IO client connected: %s', socket.id);
 
     // Send current status and QR code if available
     socket.emit('whatsapp_status', whatsappService.getStatus());
@@ -23,7 +24,7 @@ export const setupSocketIO = (server: HttpServer) => {
     }
 
     socket.on('disconnect', () => {
-      console.log('Socket.IO client disconnected:', socket.id);
+      logger.info('Socket.IO client disconnected: %s', socket.id);
     });
   });
 
@@ -37,6 +38,18 @@ export const setupSocketIO = (server: HttpServer) => {
   whatsappService.setOnStatusCallback((status) => {
     if (io) {
       io.emit('whatsapp_status', status);
+    }
+  });
+
+  whatsappService.setOnMessageCallback((message) => {
+    if (io) {
+      io.emit('whatsapp_message_received', {
+        id: message.id._serialized,
+        from: message.from,
+        body: message.body,
+        timestamp: message.timestamp,
+        type: message.type,
+      });
     }
   });
 

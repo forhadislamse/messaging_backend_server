@@ -1,5 +1,6 @@
 import { Client, LocalAuth } from 'whatsapp-web.js';
 import qrcode from 'qrcode';
+import PQueue from 'p-queue';
 import { TWhatsAppStatus } from './whatsapp.interface';
 import config from '../../../config';
 import logger from '../../../shared/logger';
@@ -10,8 +11,11 @@ class WhatsAppClient {
   private qrCode: string | null = null;
   private onQRCallback: ((qr: string) => void) | null = null;
   private onStatusCallback: ((status: TWhatsAppStatus) => void) | null = null;
+  private onMessageCallback: ((message: any) => void) | null = null;
+  private messageQueue: PQueue;
 
   constructor() {
+    this.messageQueue = new PQueue({ concurrency: 1 });
     this.client = new Client({
       authStrategy: new LocalAuth({
         dataPath: config.whatsapp.session_path
@@ -62,6 +66,13 @@ class WhatsAppClient {
       logger.warn('WhatsApp Client disconnected: %s', reason);
       this.client.initialize().catch(err => logger.error({ err }, 'Failed to re-initialize WhatsApp client'));
     });
+
+    this.client.on('message', (message) => {
+      logger.info('New WhatsApp message received from: %s', message.from);
+      if (this.onMessageCallback) {
+        this.onMessageCallback(message);
+      }
+    });
   }
 
   public initialize() {
@@ -86,6 +97,10 @@ class WhatsAppClient {
 
   public setOnStatusCallback(callback: (status: TWhatsAppStatus) => void) {
     this.onStatusCallback = callback;
+  }
+
+  public setOnMessageCallback(callback: (message: any) => void) {
+    this.onMessageCallback = callback;
   }
 }
 
