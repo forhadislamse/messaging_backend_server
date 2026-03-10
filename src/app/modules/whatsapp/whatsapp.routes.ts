@@ -1,6 +1,5 @@
 import express from 'express';
 // import auth from '../../middlewares/auth';
-import validateRequest from '../../middlewares/validateRequest';
 import { rateLimit } from 'express-rate-limit';
 import { authController } from './auth.controller';
 import { messageController } from './message.controller';
@@ -28,7 +27,6 @@ router.post(
   '/send-message',
   sendMsgLimiter,
   // auth(),
-  validateRequest(whatsappValidation.sendMessageSchema),
   messageController.sendMessage,
 );
 

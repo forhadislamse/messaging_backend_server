@@ -3,7 +3,6 @@ import config from "./config";
 import os from "os"; // ✅ add this
 import app from "./app";
 // import { initiateSuperAdmin } from "./app/db/db";
-import { setupChatWebSocket } from "./shared/websocket";
 import { setupSocketIO } from "./shared/socketio";
 import { whatsappService } from "./app/modules/whatsapp/whatsapp.service";
 
@@ -34,11 +33,7 @@ async function startServer() {
     );
 
   });
-  // ✅ Setup Chat WebSocket
-  // Path can be anything, e.g., "/ws/chat"
-  await setupChatWebSocket(server, "/ws/chat");
-  console.log("Chat WebSocket server running at /ws/chat");
-
+  
   // ✅ Setup Socket.IO for WhatsApp
   setupSocketIO(server);
   console.log("Socket.IO server running");

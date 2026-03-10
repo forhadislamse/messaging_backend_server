@@ -1,12 +1,10 @@
 import httpStatus from 'http-status';
-import sendResponse from '../../../shared/sendResponse';
 import catchAsync from '../../../shared/catchAsync';
 import { messageService } from './message.service';
 
 const sendMessage = catchAsync(async (req, res) => {
   const result = await messageService.sendWhatsAppMessage(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
+  res.status(httpStatus.OK).json({
     success: true,
     message: 'Message sent successfully',
     data: result,
