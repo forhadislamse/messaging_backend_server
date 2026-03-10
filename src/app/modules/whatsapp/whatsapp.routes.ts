@@ -19,6 +19,7 @@ const sendMsgLimiter = rateLimit({
 
 // Authentication Routes
 router.get('/status', authController.getStatus);
+router.post('/logout', authController.logout);
 
 // Messaging Routes
 router.post(

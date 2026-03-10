@@ -14,6 +14,16 @@ const getStatus = catchAsync(async (req, res) => {
   });
 });
 
+const logout = catchAsync(async (req, res) => {
+  await whatsappService.logout();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'WhatsApp session cleared successfully. A new QR code will be generated shortly.',
+  });
+});
+
 export const authController = {
   getStatus,
+  logout,
 };

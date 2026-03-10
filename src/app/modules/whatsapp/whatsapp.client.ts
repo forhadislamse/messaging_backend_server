@@ -22,7 +22,17 @@ class WhatsAppClient {
       }),
       puppeteer: {
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-extensions',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu'
+        ],
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
       }
     });
 
@@ -77,6 +87,24 @@ class WhatsAppClient {
 
   public initialize() {
     this.client.initialize().catch(err => logger.error({ err }, 'WhatsApp initialization failed'));
+  }
+
+  public async logout() {
+    try {
+      logger.info('Logging out of WhatsApp...');
+      await this.client.logout();
+      this.status = 'DISCONNECTED';
+      this.qrCode = null;
+      logger.info('WhatsApp logout successful');
+      
+      // Re-initialize to get a fresh QR code
+      setTimeout(() => {
+        this.initialize();
+      }, 2000);
+    } catch (err) {
+      logger.error({ err }, 'WhatsApp logout failed');
+      throw err;
+    }
   }
 
   public getClient() {

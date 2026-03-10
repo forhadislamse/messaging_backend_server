@@ -35,6 +35,10 @@ class WhatsAppService {
   public setOnMessageCallback(callback: (message: any) => void) {
     whatsappClient.setOnMessageCallback(callback);
   }
+
+  public async logout() {
+    await whatsappClient.logout();
+  }
 }
 
 export const whatsappService = new WhatsAppService();
