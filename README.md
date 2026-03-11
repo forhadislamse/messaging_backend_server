@@ -16,6 +16,15 @@ Built with **Node.js, Express, TypeScript, Socket.IO, and whatsapp-web.js (Puppe
 
 ---
 
+## 🎨 Frontend Client
+
+This backend API is designed to work seamlessly with its Next.js frontend counterpart.
+
+- **Frontend Repository**: [https://github.com/forhadislamse/messaging_frontend_server](https://github.com/forhadislamse/messaging_frontend_server)
+- **Live Demo**: [https://messaging-frontend-server.vercel.app/whatsapp](https://messaging-frontend-server.vercel.app/whatsapp)
+
+---
+
 ## 💻 Local Setup Instructions
 
 Follow these steps to get the backend running on your local machine.
