@@ -57,6 +57,7 @@ export const setupSocketIO = (server: HttpServer) => {
       io.emit('whatsapp_message_received', {
         id: message.id._serialized,
         from: message.from,
+        to: message.to,
         body: message.body,
         timestamp: message.timestamp,
         type: message.type,

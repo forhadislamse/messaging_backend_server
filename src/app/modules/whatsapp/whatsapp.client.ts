@@ -30,7 +30,12 @@ class WhatsAppClient {
           '--disable-accelerated-2d-canvas',
           '--no-first-run',
           '--no-zygote',
-          '--disable-gpu'
+          '--disable-gpu',
+          '--disable-web-security',
+          '--allow-running-insecure-content',
+          '--disable-client-side-phishing-detection',
+          '--disable-notifications',
+          '--hide-scrollbars'
         ],
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
       }
@@ -71,10 +76,18 @@ class WhatsAppClient {
       logger.error('WhatsApp Auth failure: %s', msg);
     });
 
-    this.client.on('disconnected', (reason) => {
+    this.client.on('disconnected', async (reason) => {
       this.status = 'DISCONNECTED';
       logger.warn('WhatsApp Client disconnected: %s', reason);
-      this.client.initialize().catch(err => logger.error({ err }, 'Failed to re-initialize WhatsApp client'));
+      try {
+        await this.client.destroy();
+        logger.info('Browser instance destroyed after disconnection');
+        setTimeout(() => {
+          this.initialize();
+        }, 5000);
+      } catch (err) {
+        logger.error({ err }, 'Failed to cleanly destroy client after disconnection');
+      }
     });
 
     this.client.on('message_create', (message) => {
@@ -89,7 +102,10 @@ class WhatsAppClient {
   }
 
   public initialize() {
-    this.client.initialize().catch(err => logger.error({ err }, 'WhatsApp initialization failed'));
+    this.client.initialize().catch(err => {
+      logger.error({ err }, 'WhatsApp initialization failed');
+      this.status = 'DISCONNECTED';
+    });
   }
 
   public async logout() {
@@ -116,10 +132,12 @@ class WhatsAppClient {
 
   public async getChats() {
     if (this.status !== 'READY') {
+      logger.warn('Chat retrieval attempted while status is %s', this.status);
       return [];
     }
     try {
       const chats = await this.client.getChats();
+      logger.info('Successfully fetched %d chats', chats.length);
       return chats.map(chat => ({
         id: chat.id._serialized,
         name: chat.name,
