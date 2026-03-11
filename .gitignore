@@ -1,9 +1,7 @@
 node_modules
-# Keep environment variables out of version control
 dist
 .vercel
 .env
-
-.vercel
 src/shared/serviceAccount.ts
 .wwebjs_auth
+.wwebjs_cache
