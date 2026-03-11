@@ -6,7 +6,7 @@ Built with **Node.js, Express, TypeScript, Socket.IO, and whatsapp-web.js (Puppe
 
 ---
 
-## 🚀 Features
+## Features
 
 - **WhatsApp Web Integration**: Scan QR code to link your WhatsApp account.
 - **REST APIs**: Endpoints to get connection status, fetch chat lists, send messages, and logout.
@@ -16,16 +16,16 @@ Built with **Node.js, Express, TypeScript, Socket.IO, and whatsapp-web.js (Puppe
 
 ---
 
-## 🎨 Frontend Client
+## Frontend Client
 
 This backend API is designed to work seamlessly with its Next.js frontend counterpart.
 
 - **Frontend Repository**: [https://github.com/forhadislamse/messaging_frontend_server](https://github.com/forhadislamse/messaging_frontend_server)
-- **Live Demo**: [https://messaging-frontend-server.vercel.app/whatsapp](https://messaging-frontend-server.vercel.app/whatsapp)
+- **Running Locally**: [http://localhost:3000/whatsapp](http://localhost:3000/whatsapp)
 
 ---
 
-## 💻 Local Setup Instructions
+##  Local Setup Instructions
 
 Follow these steps to get the backend running on your local machine.
 
@@ -54,7 +54,7 @@ npm install
 
 Create a `.env` file in the root directory by copying the `.env.example` file (or create a new one). Below is the comprehensive list of environment variables used in this project:
 
-#### 🟢 Core & Database (Required)
+#### Core & Database (Required)
 | Variable | Description | Default / Example |
 |---|---|---|
 | `NODE_ENV` | Application environment state | `development` or `production` |
@@ -62,7 +62,7 @@ Create a `.env` file in the root directory by copying the `.env.example` file (o
 | `DATABASE_URL` | MongoDB connection string | `mongodb+srv://...` |
 | `BCRYPT_SALT_ROUNDS` | Salt rounds for password hashing | `12` |
 
-#### 🔐 Authentication (Required)
+####  Authentication (Required)
 | Variable | Description | Default / Example |
 |---|---|---|
 | `JWT_SECRET` | Secret key for signing access tokens | `your_super_secret_key` |
@@ -70,14 +70,13 @@ Create a `.env` file in the root directory by copying the `.env.example` file (o
 | `REFRESH_TOKEN_SECRET` | Secret key for signing refresh tokens | `your_refresh_secret` |
 | `REFRESH_TOKEN_EXPIRES_IN` | Refresh token expiration time | `365d` |
 
-#### 🌐 URLs & Client Connectors
+####  URLs & Client Connectors
 | Variable | Description | Default / Example |
 |---|---|---|
 | `FRONTEND_BASE_URL` | Location of your frontend application | `http://localhost:3000` |
 | `CLIENT_URL` | Client URL (used for CORS) | `http://localhost:3000` |
 | `WHATSAPP_SESSION_PATH` | Directory to store WhatsApp login session | `.wwebjs_auth` |
-
-> 💡 **Note on Optional Configurations**: The `.env.example` file also contains placeholders for Firebase, SMTP (SendGrid), Cloudinary, Stripe, Twilio, and DigitalOcean. You only need to fill these in if you explicitly use those modules in your specific logic. 
+ 
 
 **Quick Start Copy:**
 ```env
@@ -115,7 +114,7 @@ Once the server is running, it will generate a QR code.
 
 ---
 
-## 📡 Postman API Documentation
+## Postman API Documentation
 
 Once the server is running (`http://localhost:13077`), you can test the following API endpoints. All WhatsApp routes are prefixed with `/api/v1/whatsapp`.
 
@@ -129,7 +128,7 @@ Once the server is running (`http://localhost:13077`), you can test the followin
 
 ---
 
-## 🔌 Socket.IO Testing Guide
+## Socket.IO Testing Guide
 
 - **URL**: `http://localhost:13077`
 - **Step-by-Step Test**:
@@ -152,32 +151,6 @@ Once the server is running (`http://localhost:13077`), you can test the followin
   - Click **Send**.
 
 ---
-
-## 🚧 Troubleshooting & Common Issues
-
-### 1. "Content unavailable. Resource was not cached." (Frontend Error)
-This usually means the frontend is trying to access the backend API or Socket URL that is offline or misconfigured in the frontend `.env` file. Ensure `NEXT_PUBLIC_BASE_URL` and `NEXT_PUBLIC_SOCKET_URL` in your frontend point to `http://localhost:13077/api/v1/` and `http://localhost:13077` respectively when testing locally.
-
-### 2. WhatsApp Client Crashes on Initialization (Windows)
-If the Puppeteer browser fails to launch:
-- Ensure you have Google Chrome installed on your PC.
-- The project is already configured with Windows-friendly Puppeteer arguments (`--disable-web-security`, `--disable-gpu`, etc.). But if issues persist, you may need to clear the `.wwebjs_auth` and `.wwebjs_cache` folders and restart.
-
-### 3. Cleaning Up Bad Sessions
-If WhatsApp is stuck connecting or throws "No LID for user" errors frequently:
-1. Stop the server (`Ctrl + C`).
-2. Delete the `.wwebjs_auth` folder in the project root.
-3. Start the server again (`npm run dev`) and re-scan the QR code.
-
----
-
-## ☁️ Deployment Notes (Railway / Render)
-
-Deploying `whatsapp-web.js` requires a server environment that supports headless Chrome (Puppeteer) and WebSocket persistence.
-
-- **Vercel is NOT supported** because Vercel functions are serverless (stateless) and cannot keep a Chrome browser running 24/7 or maintain long-lived Socket connections.
-- **Railway.app** or **Render.com** (Web Service) are highly recommended.
-- **Dependencies**: The server requires Linux system libraries to run Chrome. If deploying to Railway using the Nixpacks builder, the included `Aptfile` forces the installation of necessary tools like `libnss3` and `libasound2`.
 
 ---
 *Created by [forhadislamse]*
