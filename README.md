@@ -66,7 +66,7 @@ npm run dev
 ```
 
 If the server starts successfully, you should see logs similar to:
-```
+```text
 Server is listening on port  http://localhost:13077/api/v1
 Socket.IO server running
 WhatsApp Service initializing...
