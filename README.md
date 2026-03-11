@@ -6,6 +6,8 @@ Built with **Node.js, Express, TypeScript, Socket.IO, and whatsapp-web.js (Puppe
 
 ---
 
+![Banner](assets/image.png)
+
 ## Features
 
 - **WhatsApp Web Integration**: Scan QR code to link your WhatsApp account.
@@ -16,6 +18,8 @@ Built with **Node.js, Express, TypeScript, Socket.IO, and whatsapp-web.js (Puppe
 
 ---
 
+## Postman documentation
+- **documentation**: https://documenter.getpostman.com/view/34968572/2sBXiesZeJ
 ## Frontend Client
 
 This backend API is designed to work seamlessly with its Next.js frontend counterpart.
