@@ -1,7 +1,7 @@
 import PQueue from 'p-queue';
 import { whatsappClient } from './whatsapp.client';
 import { IWhatsAppMessagePayload } from './whatsapp.interface';
-import ApiError from '../../../errors/ApiErrors';
+import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import logger from '../../../shared/logger';
 

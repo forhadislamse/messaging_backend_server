@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import { ZodError } from "zod";
 import handleZodError from "../../errors/handleZodError";
 import parsePrismaValidationError from "../../errors/parsePrismaValidationError";
-import ApiError from "../../errors/ApiErrors";
+import ApiError from "../../errors/ApiError";
 
 import logger from "../../shared/logger";
 import config from "../../config";
