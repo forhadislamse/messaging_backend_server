@@ -134,10 +134,13 @@ Once the server is running (`http://localhost:13077`), you can test the followin
 You can test real-time events using Postman (v10+) by creating a new **Socket.IO Request**.
 
 - **URL**: `http://localhost:13077`
-- **Events to Listen (On)**:
-  - `whatsapp_status`: Returns current status strings (e.g., `READY`, `AUTHENTICATING`).
-  - `whatsapp_qr`: Returns the QR code base64 string when pairing is needed.
-  - `whatsapp_message_received`: Returns a message object whenever a message is sent or received.
+- **Setup Listeners in Postman**:
+  1. Click on the **Listeners** tab in your Socket.IO request.
+  2. Add the following event names to start receiving data:
+     - `whatsapp_status`: To see connection state changes.
+     - `whatsapp_qr`: To receive the QR code for pairing.
+     - `whatsapp_message_received`: To receive real-time messages.
+  3. Click **Connect** to start listening.
 
 - **Events to Emit (Send)**:
   - `send_message`: 
