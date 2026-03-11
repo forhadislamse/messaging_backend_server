@@ -1,6 +1,6 @@
-ÿþ# Messaging Integration Backend Server
+# Messaging Integration Backend Server
 
-This is the backend service for a real-time messaging platform, currently integrating **WhatsApp Web** capabilities via a headless browser. It provides REST APIs for session management (QR code authenticationand fetching chats/messages, along with **Socket.IO** for real-time message synchronization.
+This is the backend service for a real-time messaging platform, currently integrating **WhatsApp Web** capabilities via a headless browser. It provides REST APIs for session management (QR code authentication) and fetching chats/messages, along with **Socket.IO** for real-time message synchronization.
 
 Built with **Node.js, Express, TypeScript, Socket.IO, and whatsapp-web.js (Puppeteer)**.
 
@@ -106,7 +106,7 @@ If WhatsApp is stuck connecting or throws "No LID for user" errors frequently:
 Deploying `whatsapp-web.js` requires a server environment that supports headless Chrome (Puppeteer) and WebSocket persistence.
 
 - **Vercel is NOT supported** because Vercel functions are serverless (stateless) and cannot keep a Chrome browser running 24/7 or maintain long-lived Socket connections.
-- **Railway.app** or **Render.com** (Web Serviceare highly recommended.
+- **Railway.app** or **Render.com** (Web Service) are highly recommended.
 - **Dependencies**: The server requires Linux system libraries to run Chrome. If deploying to Railway using the Nixpacks builder, the included `Aptfile` forces the installation of necessary tools like `libnss3` and `libasound2`.
 
 ---
