@@ -115,6 +115,20 @@ Once the server is running, it will generate a QR code.
 
 ---
 
+## 📡 Postman API Documentation
+
+Once the server is running (`http://localhost:13077`), you can test the following API endpoints. All WhatsApp routes are prefixed with `/api/v1/whatsapp`.
+
+| Method | Endpoint | Description | Test Case / Payload Example |
+|---|---|---|---|
+| **GET** | `/status` | Check connection & get QR | **Success**: `{"success": true, "data": {"status": "READY"}}` |
+| **GET** | `/chats` | Get all active chats | **Check**: Returns array of chats with last message info. |
+| **GET** | `/chats/:id/messages` | Get message history | **Check**: Returns 40 messages for the given chat ID. |
+| **POST** | `/send-message` | Send a text message | `{ "phoneNumber": "8801...", "message": "Hello!" }` |
+| **POST** | `/logout` | Disconnect session | **Check**: Returns `{"success": true}` & clears local cache. |
+
+---
+
 ## 🚧 Troubleshooting & Common Issues
 
 ### 1. "Content unavailable. Resource was not cached." (Frontend Error)
