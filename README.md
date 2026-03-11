@@ -52,18 +52,41 @@ npm install
 
 ### 4. Environment Variables Setup
 
-Create a `.env` file in the root directory by copying the `.env.example` file (or create a new one):
+Create a `.env` file in the root directory by copying the `.env.example` file (or create a new one). Below is the comprehensive list of environment variables used in this project:
 
+#### 🟢 Core & Database (Required)
+| Variable | Description | Default / Example |
+|---|---|---|
+| `NODE_ENV` | Application environment state | `development` or `production` |
+| `PORT` | The port your server will run on | `13077` |
+| `DATABASE_URL` | MongoDB connection string | `mongodb+srv://...` |
+| `BCRYPT_SALT_ROUNDS` | Salt rounds for password hashing | `12` |
+
+#### 🔐 Authentication (Required)
+| Variable | Description | Default / Example |
+|---|---|---|
+| `JWT_SECRET` | Secret key for signing access tokens | `your_super_secret_key` |
+| `EXPIRES_IN` | Access token expiration time | `365d` |
+| `REFRESH_TOKEN_SECRET` | Secret key for signing refresh tokens | `your_refresh_secret` |
+| `REFRESH_TOKEN_EXPIRES_IN` | Refresh token expiration time | `365d` |
+
+#### 🌐 URLs & Client Connectors
+| Variable | Description | Default / Example |
+|---|---|---|
+| `FRONTEND_BASE_URL` | Location of your frontend application | `http://localhost:3000` |
+| `CLIENT_URL` | Client URL (used for CORS) | `http://localhost:3000` |
+| `WHATSAPP_SESSION_PATH` | Directory to store WhatsApp login session | `.wwebjs_auth` |
+
+> 💡 **Note on Optional Configurations**: The `.env.example` file also contains placeholders for Firebase, SMTP (SendGrid), Cloudinary, Stripe, Twilio, and DigitalOcean. You only need to fill these in if you explicitly use those modules in your specific logic. 
+
+**Quick Start Copy:**
 ```env
 NODE_ENV=development
 PORT=13077
-
-# JWT (If used for auth)
-JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRES_IN=30d
-
-# WhatsApp Configuration
-WHATSAPP_SESSION_PATH=./.wwebjs_auth
+DATABASE_URL=mongodb://localhost:27017/messaging
+JWT_SECRET=myjwtsecret123
+EXPIRES_IN=30d
+WHATSAPP_SESSION_PATH=.wwebjs_auth
 ```
 
 ### 5. Running the Application
