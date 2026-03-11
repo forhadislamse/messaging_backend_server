@@ -129,6 +129,24 @@ Once the server is running (`http://localhost:13077`), you can test the followin
 
 ---
 
+## 🔌 Socket.IO Testing Guide
+
+You can test real-time events using Postman (v10+) by creating a new **Socket.IO Request**.
+
+- **URL**: `http://localhost:13077`
+- **Events to Listen (On)**:
+  - `whatsapp_status`: Returns current status strings (e.g., `READY`, `AUTHENTICATING`).
+  - `whatsapp_qr`: Returns the QR code base64 string when pairing is needed.
+  - `whatsapp_message_received`: Returns a message object whenever a message is sent or received.
+
+- **Events to Emit (Send)**:
+  - `send_message`: 
+    ```json
+    { "phoneNumber": "8801...", "message": "Test via Socket" }
+    ```
+
+---
+
 ## 🚧 Troubleshooting & Common Issues
 
 ### 1. "Content unavailable. Resource was not cached." (Frontend Error)
